@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS =['https://amar-kotha.onrender.com', 'http://127.0.0.1:8000/']
 
 
 # Application definition
