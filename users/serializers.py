@@ -20,6 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(required=True)
+    email = serializers.CharField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
     
     class Meta:
         model = User
@@ -39,28 +42,27 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({'error': "Email Already Exists"})
         
         user = User(username=username, email=email,first_name=first_name,last_name=last_name)
-        print(user)
         user.set_password(password)
         user.is_active = False
         user.save()
         return user
 
 class AccountRegisterSerializer(serializers.ModelSerializer):
-    user = UserRegisterSerializer()
-
     class Meta:
         model = Account
         fields = ['user','image', 'phone', 'user_type']
 
     def save(self):
+        user = self.validated_data['user']
         phone = self.validated_data['phone']
         image = self.validated_data['image']
         user_type = self.validated_data['user_type']
-        user = self.user
-        
         account = Account(user=user, phone=phone, image=image, user_type=user_type)
         account.save()
         return account
         
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
 
     

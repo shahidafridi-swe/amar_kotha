@@ -5,6 +5,13 @@ from .models import Article, Rating
 from .serializers import ArticleSerializer, RatingSerializer
 from .permissions import IsEditorOrReadOnly, IsViewerOrReadOnly
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+# for email
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 class ArticleForSpecificCategory(filters.BaseFilterBackend):
     def filter_queryset(self, request, queryset, view):
@@ -21,9 +28,21 @@ class ArticleViewset(viewsets.ModelViewSet):
     filter_backends = [ArticleForSpecificCategory]
 
 
-class RatingViewSet(viewsets.ModelViewSet):
+
+class RatingApiView(APIView):
     permission_classes = [IsViewerOrReadOnly]
-    queryset = Rating.objects.all()
     serializer_class = RatingSerializer
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data) 
+        if serializer.is_valid(): 
+            rating = serializer.save()
+            
+            email_subject = "Rating Submitted"
+            email_body = render_to_string('rating_email.html', {'rating':rating})
+            email = EmailMultiAlternatives(email_subject, '', to=[rating.user.email])
+            email.attach_alternative(email_body, 'text/html')
+            email.send()
+            return Response("Rating submitted Successfully")
+        return Response(serializer.errors)
     
         

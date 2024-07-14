@@ -11,11 +11,15 @@ class ArticleSerializer(serializers.ModelSerializer):
 class RatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
-        fields = ['id', 'article', 'rating', 'user']
+        fields = [ 'article', 'rating', 'user']
     
-    def validate(self, data):
-        user = self.context['request'].user
-        article = data['article']
+    def save(self):
+        article = self.validated_data['article']
+        rating = self.validated_data['rating']
+        user = self.validated_data['user']
         if Rating.objects.filter(user=user, article=article).exists():
             raise serializers.ValidationError("You have already rated this article.")
-        return data
+        rating_obj = Rating(article=article, rating=rating, user=user)
+        rating_obj.save()
+        return rating_obj
+    
