@@ -40,16 +40,23 @@ class UserRegistrationApiView(APIView):
             email.send()
             
             return Response("Check Your Email For Confirmation")
+        
         return Response(serializer.errors)
     
 class AccountRegistrationApiView(APIView):
     serializer_class = AccountRegisterSerializer
     def post(self, request):
+        print("request-data---",request.data)
         serializer = self.serializer_class(data=request.data) 
+        print("serializer---",serializer)
         if serializer.is_valid(): 
+            
             account = serializer.save()
+            print("account -> ", account)
             return Response("Account Created Successfully")
         return Response(serializer.errors)
+    
+    
     
 def activateAccount(request, uid64, token):
     try:

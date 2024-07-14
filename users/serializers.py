@@ -23,10 +23,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.CharField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    user_type = serializers.CharField(required=True)
+    phone = serializers.CharField(required=True)
+    image = serializers.ImageField(required=False, allow_null=True)
     
     class Meta:
         model = User
-        fields = ['username',  'email', 'first_name', 'last_name', 'password','confirm_password']
+        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'confirm_password', 'user_type', 'phone', 'image']
 
     def save(self):
         username = self.validated_data['username']
@@ -35,6 +38,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         last_name = self.validated_data['last_name']
         password = self.validated_data['password']
         password2 = self.validated_data['confirm_password']
+        user_type = self.validated_data['user_type']
+        phone = self.validated_data['phone']
+        image = self.validated_data.get('image')
         
         if password != password2:
             raise serializers.ValidationError({'error': "Two Password Doesn't Matched"})
@@ -45,6 +51,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.is_active = False
         user.save()
+        
+        account = Account(user=user, user_type=user_type, phone=phone, image=image)
+        account.save()
+
+        
         return user
 
 class AccountRegisterSerializer(serializers.ModelSerializer):
