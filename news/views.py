@@ -1,13 +1,13 @@
 from django.shortcuts import render
-from rest_framework import  filters, viewsets
+from rest_framework import  filters, viewsets, status
 
-from .models import Article, Rating
-from .serializers import ArticleSerializer, RatingSerializer
+from .models import Article, Rating, Category
+from .serializers import ArticleSerializer, RatingSerializer, CategorySerializer
 from .permissions import IsEditorOrReadOnly, IsViewerOrReadOnly
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAuthenticated
 # for email
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -22,15 +22,26 @@ class ArticleForSpecificCategory(filters.BaseFilterBackend):
 
 
 class ArticleViewset(viewsets.ModelViewSet):
-    permission_classes = [IsEditorOrReadOnly]
+    # permission_classes = [IsAuthenticated]
+    # permission_classes = [IsEditorOrReadOnly]
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
     filter_backends = [ArticleForSpecificCategory]
+    
+    
+    def perform_create(self,serializer):
+        serializer.save(editor=self.request.user)
+          
+    
+    
+class CategoryViewset(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 
 class RatingApiView(APIView):
-    permission_classes = [IsViewerOrReadOnly]
+    # permission_classes = [IsViewerOrReadOnly]
     serializer_class = RatingSerializer
     def post(self, request):
         serializer = self.serializer_class(data=request.data) 
@@ -42,7 +53,7 @@ class RatingApiView(APIView):
             email = EmailMultiAlternatives(email_subject, '', to=[rating.user.email])
             email.attach_alternative(email_body, 'text/html')
             email.send()
-            return Response("Rating submitted Successfully")
-        return Response(serializer.errors)
+            return Response({"message": "Rating submitted successfully"})
+        return Response(serializer.errors, status=400)
     
         

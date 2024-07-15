@@ -5,7 +5,14 @@ from .models import Article, Category,Rating
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ['id','headline', 'body', 'image', 'editor', 'category','ratings', 'created_at']
+        fields = ['id','headline', 'body', 'image', 'editor', 'ratings','category', 'created_at']
+        read_only_fields = ['editor', 'ratings']
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
+
 
 
 class RatingSerializer(serializers.ModelSerializer):

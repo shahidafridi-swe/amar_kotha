@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .serializers import UserSerializer, AccountRegisterSerializer, UserRegisterSerializer,UserLoginSerializer
 from .permissions import OwnerPatchOnlyOrReadOnly
 from rest_framework.response import Response
-
+from rest_framework.permissions import IsAuthenticated
 # for token
 from django.contrib.auth.tokens import default_token_generator
 # for uid
@@ -52,7 +52,6 @@ class AccountRegistrationApiView(APIView):
         if serializer.is_valid(): 
             
             account = serializer.save()
-            print("account -> ", account)
             return Response("Account Created Successfully")
         return Response(serializer.errors)
     
@@ -91,7 +90,8 @@ class UserLoginApiView(APIView):
         return Response(serializer.errors)
                 
 class UserLogoutApiView(APIView):
-    def get(self, request):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
         request.user.auth_token.delete()
         logout(request)
-        return redirect('login')
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)

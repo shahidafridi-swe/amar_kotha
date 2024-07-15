@@ -37,7 +37,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS =['https://amar-kotha.onrender.com', 'http://127.0.0.1:8000/']
 
-
+LOGIN_URL = "http://127.0.0.1:5500/login.html"
 # Application definition
 
 INSTALLED_APPS = [
@@ -55,6 +55,14 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
