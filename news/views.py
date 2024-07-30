@@ -40,8 +40,9 @@ class CategoryViewset(viewsets.ModelViewSet):
 
 
 
-class RatingApiView(APIView):
-    # permission_classes = [IsViewerOrReadOnly]
+class RatingApiView(viewsets.ModelViewSet):
+    
+    queryset = Rating.objects.all()
     serializer_class = RatingSerializer
     def post(self, request):
         serializer = self.serializer_class(data=request.data) 

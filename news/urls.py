@@ -7,10 +7,10 @@ router = DefaultRouter()
 router.register('articles',views.ArticleViewset, basename='articles')
 
 router.register('categories',views.CategoryViewset, basename='categories')
+router.register('rating',views.RatingApiView, basename='rating')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('rating/', views.RatingApiView.as_view(), name="rating"),
     
 ]
 
