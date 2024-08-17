@@ -20,7 +20,7 @@ class Category(models.Model):
 class Article(models.Model):
     headline = models.CharField(max_length=255)
     editor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='articles')
-    image = models.ImageField(upload_to='news/images/', blank=True, null=True)
+    image_url = models.URLField(max_length=255, blank=True, null=True)  # Changed from ImageField to URLField
     body = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='articles', null=True)
     created_at = models.DateTimeField(auto_now_add=True)

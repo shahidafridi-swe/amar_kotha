@@ -28,10 +28,8 @@ class ArticleViewset(viewsets.ModelViewSet):
     serializer_class = ArticleSerializer
     filter_backends = [ArticleForSpecificCategory]
     
-    
-    def perform_create(self,serializer):
+    def perform_create(self, serializer):
         serializer.save(editor=self.request.user)
-          
     
     
 class CategoryViewset(viewsets.ModelViewSet):
