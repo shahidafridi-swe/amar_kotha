@@ -13,9 +13,10 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         image_url = validated_data.pop('image_url', None)
+        
         article = Article.objects.create(**validated_data)
         if image_url:
-            article.image = image_url  # Save the Imgbb URL as the image
+            article.image_url = image_url  
             article.save()
         return article
 
