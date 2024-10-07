@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import  filters, viewsets, status
 
-from .models import Article, Rating, Category
-from .serializers import ArticleSerializer, RatingSerializer, CategorySerializer
+from .models import Article, Rating, Category, BreakingNews, Review
+from .serializers import ArticleSerializer, RatingSerializer, CategorySerializer, BreakingNewsSerializer, ReviewSerializer
 from .permissions import IsEditorOrReadOnly, IsViewerOrReadOnly
 
 from rest_framework.views import APIView
@@ -55,4 +55,10 @@ class RatingApiView(viewsets.ModelViewSet):
             return Response({"message": "Rating submitted successfully"})
         return Response(serializer.errors, status=400)
     
-        
+class ReviewApiView(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+class BreakingNewsApiView(viewsets.ModelViewSet):
+    queryset = BreakingNews.objects.all()
+    serializer_class = BreakingNewsSerializer

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Article, Category,Rating
+from .models import Article, Category,Rating, BreakingNews, Review
 
 class ArticleSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
@@ -51,3 +51,19 @@ class RatingSerializer(serializers.ModelSerializer):
         print("ratobj",rating_obj)
         return rating_obj
     
+
+class BreakingNewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BreakingNews
+        fields = "__all__"
+        
+
+class ReviewSerializer(serializers.ModelSerializer):
+    reviewer_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Review
+        fields = "__all__"
+        
+    def get_reviewer_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}"

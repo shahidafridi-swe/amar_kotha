@@ -40,3 +40,26 @@ class Rating(models.Model):
     
     def __str__(self) -> str:
         return f"{self.article.headline} - Rating: {self.rating}"
+
+class Review(models.Model):
+    body = models.TextField()
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['article', 'user'], name='unique_article_review')
+        ]
+    
+    def __str__(self) -> str:
+        return f"{self.article.headline} - {self.body}"
+    
+
+
+class BreakingNews(models.Model):
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self) -> str:
+        return self.body
+    
