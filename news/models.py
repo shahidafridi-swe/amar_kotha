@@ -54,8 +54,7 @@ class Review(models.Model):
     def __str__(self) -> str:
         return f"{self.article.headline} - {self.body}"
     
-
-
+    
 class BreakingNews(models.Model):
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

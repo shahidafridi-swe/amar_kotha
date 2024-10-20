@@ -54,10 +54,12 @@ class RatingApiView(viewsets.ModelViewSet):
             email.send()
             return Response({"message": "Rating submitted successfully"})
         return Response(serializer.errors, status=400)
+  
     
 class ReviewApiView(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
 
 class BreakingNewsApiView(viewsets.ModelViewSet):
     queryset = BreakingNews.objects.all()
